@@ -5,7 +5,7 @@
         <div class="container-fluid my-2">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Create Category</h1>
+                    <h1>Edit Category</h1>
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="{{ route('categories.view') }}" class="btn btn-primary">Back</a>
@@ -28,7 +28,7 @@
                                 <div class="mb-3">
                                     <label for="name">Name</label>
                                     <input type="text" name="name" id="name" class="form-control"
-                                        placeholder="Name">
+                                        placeholder="Name" value="{{ $category->name }}">
                                     <p></p>
                                 </div>
                             </div>
@@ -36,7 +36,7 @@
                                 <div class="mb-3">
                                     <label for="slug">Slug</label>
                                     <input type="text" readonly name="slug" id="slug" class="form-control"
-                                        placeholder="Slug">
+                                        placeholder="Slug" value="{{ $category->slug }}">
                                     <p></p>
                                 </div>
                             </div>
@@ -50,13 +50,18 @@
                                 </div>
                             </div>
                            </div>
+                           @if(!empty($category->image))
+                            <div>
+                                <img width="200px" src="{{ asset('uploads/category/'.$category->image) }}">
+                            </div>
+                           @endif
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control">
-                                        <option value="1">Active</option>
-                                        <option value="0">Block</option>
+                                        <option {{ ($category->status==1)?'selected':'' }} value="1">Active</option>
+                                        <option {{ ($category->status==0)?'selected':'' }} value="0">Block</option>
                                     </select>
                                 </div>
                             </div>
@@ -64,7 +69,7 @@
                     </div>
                 </div>
                 <div class="pb-5 pt-3">
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                     <a href="{{ route('categories.view') }}" class="btn btn-outline-dark ml-3">Cancel</a>
                 </div>
             </form>
@@ -80,8 +85,8 @@
             var element = $(this);
             $("button[type=submit]").prop('disabled', true);
             $.ajax({
-                url: '{{ route('categories.store') }}',
-                type: 'post',
+                url: '{{ route('categories.update',$category->id) }}',
+                type: 'put',
                 data: element.serializeArray(),
                 dataType: 'json',
                 success: function(response) {
@@ -94,6 +99,9 @@
                         $('#slug').removeClass('is-invalid').siblings('p').removeClass(
                             'invalid-feedback').html("");
                     } else {
+                        if(reponse['notFound']==true){
+                            window.location.href="{{ route('categories.view') }}";
+                        }
                         var errors = response['errors'];
 
                         if (errors['name']) {
