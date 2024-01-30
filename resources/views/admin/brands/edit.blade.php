@@ -4,7 +4,7 @@
     <div class="container-fluid my-2">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Create Brand</h1>
+                <h1>Edit Brand</h1>
             </div>
             <div class="col-sm-6 text-right">
                 <a href="{{ route('brands') }}" class="btn btn-primary">Back</a>
@@ -17,21 +17,21 @@
 <section class="content">
     <!-- Default box -->
     <div class="container-fluid">
-        <form action="" method="post" name="createBrandForm" id="createBrandForm">
+        <form action="" method="post" name="editBrandForm" id="editBrandForm">
         <div class="card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Name">
+                            <input type="text" value="{{ $brand->name }}" name="name" id="name" class="form-control" placeholder="Name">
                             <p></p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="slug">Slug</label>
-                            <input readonly type="text" name="slug" id="slug" class="form-control" placeholder="Slug">
+                            <input readonly type="text" name="slug" value="{{ $brand->slug }}" id="slug" class="form-control" placeholder="Slug">
                             <p></p>
                         </div>
                     </div>
@@ -39,8 +39,8 @@
                         <div class="mb-3">
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control">
-                                <option value="1">Active</option>
-                                <option value="0">Block</option>
+                                <option {{ ($brand->status==1)?'selected':'' }} value="1">Active</option>
+                                <option {{ ($brand->status==0)?'selected':'' }} value="0">Block</option>
                             </select>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="pb-5 pt-3">
-            <button class="btn btn-primary" type="submit">Create</button>
+            <button class="btn btn-primary" type="submit">update</button>
             <a href="brands.html" class="btn btn-outline-dark ml-3">Cancel</a>
         </div>
         </form>
@@ -62,13 +62,13 @@
 @endsection
 @section('customjs')
     <script>
-        $('#createBrandForm').submit(function(event) {
+        $('#editBrandForm').submit(function(event) {
             event.preventDefault();
             var element = $(this);
             $("button[type=submit]").prop('disabled', true);
             $.ajax({
-                url: '{{ route('brands.store') }}',
-                type: 'post',
+                url: '{{ route('brands.update',$brand->id) }}',
+                type: 'put',
                 data: element.serializeArray(),
                 dataType: 'json',
                 success: function(response) {
