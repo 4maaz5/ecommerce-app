@@ -12,6 +12,7 @@ class TempImagesController extends Controller
 {
     public function create(Request $request){
 
+
         $image=$request->image;
         if(!empty($image)){
             $ext=$image->getClientOriginalExtension();
@@ -21,11 +22,12 @@ class TempImagesController extends Controller
             $tempImage->save();
             $image->move(public_path().'/temp',$newName);
 
-            //generate thumbnail
-            $sourcePath=public_path().'/temp/'.$newName;
-            $destPath=public_path().'/temp/thumb/'.$newName;
-            $image=Image::make($sourcePath);
-            $image->save($destPath);
+
+            // //generate thumbnail
+            // $sourcePath=public_path().'/temp/'.$newName;
+            // $destPath=public_path().'/temp/thumb/'.$newName;
+            // $image=Image::make($sourcePath);
+            // $image->save($destPath);
 
             return response()->json([
                 'status'=>true,

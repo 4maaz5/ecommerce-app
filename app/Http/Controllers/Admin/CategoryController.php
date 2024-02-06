@@ -32,6 +32,7 @@ class CategoryController extends Controller
        $category->name=$request->name;
        $category->slug=$request->slug;
        $category->status=$request->status;
+       $category->show=$request->show;
        $category->save();
 
        // storing image
@@ -90,6 +91,7 @@ class CategoryController extends Controller
            $category->name=$request->name;
            $category->slug=$request->slug;
            $category->status=$request->status;
+           $category->show=$request->show;
            $category->save();
 
 

@@ -59,8 +59,15 @@
                             </select>
                            </div>
                     </div>
-                </div>
-            </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="show">Show On Home</label>
+                            <select name="show" id="show" class="form-control">
+                                 <option {{ ($subCategory->show==1)?'selected':'' }} value="1">Yes</option>
+                                 <option {{ ($subCategory->show==0)?'selected':'' }} value="0">No</option>
+                            </select>
+                           </div>
+                    </div>
         </div>
         <div class="pb-5 pt-3">
             <button type="submit" class="btn btn-primary">Update</button>

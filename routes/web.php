@@ -11,6 +11,7 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
+use App\Http\Controllers\front\FrontController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,7 @@ use App\Http\Controllers\admin\TempImagesController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [FrontController::class,'index'])->name('front.home');
 Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['middleware' => 'admin.guest'], function () {
@@ -70,7 +69,11 @@ Route::group(['prefix' => 'admin'], function () {
 
         // Products routes
         Route::get('product/create',[ProductController::class,'create'])->name('products.create');
+        Route::get('product/list',[ProductController::class,'index'])->name('products.index');
         Route::post('/products/store',[ProductController::class,'store'])->name('products.store.test');
+        Route::get('/products/edit/{id}',[ProductController::class,'edit'])->name('products.edit');
+        Route::put('/products/update/{id}',[ProductController::class,'update'])->name('products.update');
+        Route::get('/products/delete/{id}',[ProductController::class,'destroy'])->name('products.delete');
 
         Route::get('product/sub-categories',[ProductSubCategoryController::class,'index'])->name('product-subcategories.index');
 
