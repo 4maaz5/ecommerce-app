@@ -11,8 +11,10 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
+use App\Http\Controllers\front\CartController;
 use App\Http\Controllers\front\FrontController;
 use App\Http\Controllers\front\ShopController;
+use App\Http\Controllers\front\UserProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,11 +29,11 @@ use App\Http\Controllers\front\ShopController;
 
 Route::get('/', [FrontController::class,'index'])->name('front.home');
 Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class,'index'])->name('front.shop');
-
+Route::get('/products/{slug}', [UserProductController::class,'index'])->name('front.products');
+Route::get('/cart', [CartController::class,'index'])->name('front.cart');
 
 
 Route::group(['prefix' => 'admin'], function () {
-
     Route::group(['middleware' => 'admin.guest'], function () {
         Route::get('login', [AdminLoginController::class, 'index'])->name('admin.login');
         Route::post('authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');

@@ -35,6 +35,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('front/css/slick-theme.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ asset('front/css/video-js.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('front/css/style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('front/css/ion.rangeSlider.min.css') }}" />
 
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,5 +49,6 @@
 @include('front.layouts.header')
 @yield('content')
 @include('front.layouts.footer')
+@yield('customJs')
 </body>
 </html>

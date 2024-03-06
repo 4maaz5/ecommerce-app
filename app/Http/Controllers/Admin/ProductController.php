@@ -57,6 +57,8 @@ class ProductController extends Controller
          $product->sub_category_id=$request->sub_category;
          $product->brand_id=$request->brand;
          $product->is_featured=$request->is_featured;
+         $product->short_description=$request->short_description;
+         $product->shiping_returns=$request->shiping_returns;
          $product->save();
 
 
@@ -86,7 +88,7 @@ class ProductController extends Controller
     $product=Product::find($id);
     $categories=Category::where('id',$product->category_id)->get();
     $subCategories=SubCategory::where('category_id',$product->category_id)->get();
-    $brands=Brand::where('id',$product->brand_id)->get();
+    $brands=Brand::all();
     $data['categories']=$categories;
     $data['brands']=$brands;
     $data['product']=$product;
@@ -94,6 +96,7 @@ class ProductController extends Controller
     return view('admin.products.edit',$data);
   }
   public function update(Request $request, $id){
+    // dd("test");
     $rules=[
         'title'=>'required',
         'slug'=>'required|unique:products',
@@ -103,11 +106,14 @@ class ProductController extends Controller
         'category'=>'required|numeric',
         'is_featured'=>'required|in:Yes,No',
     ];
+    // dd("test2");
     if (!empty($request->track_qty) && $request->track_qty=="Yes") {
         $rules['qty']='required|numeric';
     }
+    // dd('test3');
     $validator=Validator::make($request->all(),$rules);
-    if ($validator->passes()) {
+    // if ($validator->passes()) {
+        // dd("check4");
      $product=Product::find($id);
      $product->title=$request->title;
      $product->slug=$request->slug;
@@ -123,13 +129,34 @@ class ProductController extends Controller
      $product->sub_category_id=$request->sub_category;
      $product->brand_id=$request->brand;
      $product->is_featured=$request->is_featured;
+     $product->short_description=$request->short_description;
+     $product->shiping_returns=$request->shiping_returns;
      $product->save();
+         //images code
+         $image=array();
+         if ($files=$request->file('image')) {
+            foreach ($files as $file) {
+                $image_name=md5(rand(1000,10000));
+                $ext=strToLower($file->getClientOriginalExtension());
+                $image_full_name=$image_name.'.'.$ext;
+                $upload_path='public/temp/thumb/';
+                $image_url=$upload_path.$image_full_name;
+                $file->move($upload_path,$image_full_name);
+                $image[]=$image_url;
+            }
+         }
+         $id=Product_image::where('product_id',$id)->first();
+         $idd=$id->id;
+         $product_images=Product_Image::find($idd);
+         $product_images->product_id=$product->id;
+         $product_images->image=implode('|',$image);
+         $product_images->save();
      $request->session()->flash('success','Product Updated Succesfully');
      return redirect()->route('products.index');
-    }
-    else{
-    return redirect()->back()->with('error','Something went wrong!');
-}
+//     }
+//     else{
+//     return redirect()->back()->with('error','Something went wrong!');
+// }
   }
   public function destroy($id){
     $productDelete=Product::find($id);

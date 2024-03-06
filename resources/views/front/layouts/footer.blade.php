@@ -53,6 +53,7 @@
 <script src="{{ asset('front/js/instantpages.5.1.0.min.js') }}"></script>
 <script src="{{ asset('front/js/lazyload.17.6.0.min.js') }}"></script>
 <script src="{{ asset('front/js/slick.min.js') }}"></script>
+<script src="{{ asset('front/js/ion.rangeSlider.min.js') }}"></script>
 <script src="{{ asset('front/js/custom.js') }}"></script>
 <script>
 window.onscroll = function() {myFunction()};

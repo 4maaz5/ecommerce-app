@@ -137,7 +137,7 @@
                     <div class="col-md-3">
                         <div class="card product-card">
                             <div class="product-image position-relative">
-                                <a href="" class="product-img">
+                                <a href="{{ route('front.products',$product->slug) }}" class="product-img">
                                     @php
                                         $image=DB::table('product__images')->where('product_id',$product->id)->first();
                                         if (!empty($image)) {
@@ -162,7 +162,7 @@
                                 </div>
                             </div>
                             <div class="card-body text-center mt-3">
-                                <a class="h6 link" href="product.php">{{ $product->title }}</a>
+                                <a class="h6 link" href="{{ route('front.products',$product->slug) }}">{{ $product->title }}</a>
                                 <div class="price mt-2">
                                     <span class="h5"><strong>{{ "$".$product->price }}</strong></span>
                                     @if($product->compare_price > 0)
@@ -192,7 +192,7 @@
                 <div class="col-md-3">
                     <div class="card product-card">
                         <div class="product-image position-relative">
-                            <a href="" class="product-img">
+                            <a href="{{ route('front.products',$product->slug) }}" class="product-img">
                                 @php
                                 $image=DB::table('product__images')->where('product_id',$product->id)->first();
                                 if (!empty($image)) {
@@ -215,7 +215,7 @@
                             </div>
                         </div>
                         <div class="card-body text-center mt-3">
-                            <a class="h6 link" href="product.php">{{ $product->title }}</a>
+                            <a class="h6 link" href="{{ route('front.products',$product->slug) }}">{{ $product->title }}</a>
                             <div class="price mt-2">
                                 <span class="h5"><strong>{{ "$".$product->price }}</strong></span>
                                 @if($product->compare_price > 0)

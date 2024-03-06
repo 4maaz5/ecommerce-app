@@ -17,7 +17,7 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
-            <form method="post" action="{{ route('products.update',$product->id) }}" name="ProductForm" id="ProductForm">
+            <form method="post" action="{{ route('products.update',$product->id) }}" enctype="multipart/form-data" name="ProductForm" id="ProductForm">
                 @csrf
                 @method('put')
             <div class="container-fluid">
@@ -42,21 +42,30 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-3">
+                                            <label for="description">Short Description</label>
+                                            <textarea name="short_description" id="description" cols="30" rows="10" class="summernote" placeholder="Description">{{ $product->short_description }}"</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
                                             <label for="description">Description</label>
                                             <textarea name="description" id="description" cols="30" rows="10" class="summernote" placeholder="Description">{{ $product->description }}"</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="description">Shipping and returns</label>
+                                            <textarea name="shiping_returns" id="description" cols="30" rows="10" class="summernote" placeholder="Description">{{ $product->shiping_returns }}"</textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h2 class="h4 mb-3">Media</h2>
-                                <div id="image" class="dropzone dz-clickable">
-                                    <div class="dz-message needsclick">
-                                        <br>Drop files here or click to upload.<br><br>
-                                    </div>
-                                </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="image">Images</label>
+                                <input  type="file" name="image[]" multiple id="image" class="form-control" placeholder="Image">
+
                             </div>
                         </div>
                         <div class="card mb-3">
@@ -166,7 +175,7 @@
                                         <option value="">Select a brand</option>
                                         @if($brands->isNotEmpty())
                                             @foreach($brands as $brand)
-                                            <option {{ ($product->brand_id==$brand->id)?'selected':'' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                             @endforeach
                                         @endif
                                     </select>
