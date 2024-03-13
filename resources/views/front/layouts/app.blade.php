@@ -44,6 +44,7 @@
 
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 @include('front.layouts.header')

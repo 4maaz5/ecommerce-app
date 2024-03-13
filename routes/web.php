@@ -31,6 +31,7 @@ Route::get('/', [FrontController::class,'index'])->name('front.home');
 Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class,'index'])->name('front.shop');
 Route::get('/products/{slug}', [UserProductController::class,'index'])->name('front.products');
 Route::get('/cart', [CartController::class,'index'])->name('front.cart');
+Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.addToCart');
 
 
 Route::group(['prefix' => 'admin'], function () {
@@ -81,7 +82,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/products/edit/{id}',[ProductController::class,'edit'])->name('products.edit');
         Route::put('/products/update/{id}',[ProductController::class,'update'])->name('products.update');
         Route::get('/products/delete/{id}',[ProductController::class,'destroy'])->name('products.delete');
-
+        Route::get('/get-products', [ProductController::class,'getProducts'])->name('products.related');
         Route::get('product/sub-categories',[ProductSubCategoryController::class,'index'])->name('product-subcategories.index');
 
         Route::get('getSlug',function(Request $request){

@@ -134,6 +134,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h2 class="h4 mb-3">Related products</h2>
+                            <select multiple class="related-product w-100" name="related_products[]" id="related_products">
+
+                            </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card mb-3">
@@ -201,6 +209,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -215,6 +224,21 @@
 @endsection
 @section('customjs')
     <script>
+$(".related-product").select2({
+    ajax:{
+        url:'{{ route("products.related") }}',
+        dataType:'json',
+        tags:true,
+        multiple:true,
+        minimumInputLength:4,
+        processResults: function(data){
+            return {
+                results:data.tags
+            };
+        }
+    }
+});
+
 
         $('#title').change(function() {
             element = $(this);

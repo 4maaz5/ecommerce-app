@@ -59,6 +59,7 @@ class ProductController extends Controller
          $product->is_featured=$request->is_featured;
          $product->short_description=$request->short_description;
          $product->shiping_returns=$request->shiping_returns;
+         $product->related_products=(!empty($request->related_products))?implode(',',$request->related_products):'';
          $product->save();
 
 
@@ -89,10 +90,21 @@ class ProductController extends Controller
     $categories=Category::where('id',$product->category_id)->get();
     $subCategories=SubCategory::where('category_id',$product->category_id)->get();
     $brands=Brand::all();
+    //related products
+    $relatedProducts=[];
+
+    if ($product->related_products!='') {
+        $productArray=explode(',',$product->related_products);
+        $relatedProducts=Product::whereIn('id',$productArray)->get();
+    }
+    // dd($relatedProducts);
+
+    $data=[];
     $data['categories']=$categories;
     $data['brands']=$brands;
     $data['product']=$product;
     $data['subCategories']=$subCategories;
+    $data['relatedProducts']=$relatedProducts;
     return view('admin.products.edit',$data);
   }
   public function update(Request $request, $id){
@@ -131,6 +143,7 @@ class ProductController extends Controller
      $product->is_featured=$request->is_featured;
      $product->short_description=$request->short_description;
      $product->shiping_returns=$request->shiping_returns;
+     $product->related_products=(!empty($request->related_products))?implode(',',$request->related_products):'';
      $product->save();
          //images code
          $image=array();
@@ -164,5 +177,21 @@ class ProductController extends Controller
     $productDelete->delete();
     $productImages->delete();
     return redirect()->back()->with('danger','Product deleted Successfully!');
+  }
+  public function getProducts(Request $request){
+    $tempProduct=[];
+     if ($request->term!="") {
+        $products=Product::where('title','like','%'.$request->term)->get();
+
+        if ($products!=null) {
+            foreach ($products as $product) {
+                $tempProduct[]=array('id'=>$product->id,'text'=>$product->title);
+            }
+        }
+     }
+     return response()->json([
+        'tags'=>$tempProduct,
+        'status'=>true
+     ]);
   }
 }

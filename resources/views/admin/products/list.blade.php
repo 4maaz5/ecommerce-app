@@ -60,7 +60,20 @@
                                     @foreach($products as $product)
                                     <tr>
                                         <td>{{ $product->id }}</td>
-                                        <td><img src="img/product-1.jpg" class="img-thumbnail" width="50" ></td>
+                                        <td>
+                                            @php
+                                            $image=DB::table('product__images')->where('product_id',$product->id)->first();
+                                            if (!empty($image)) {
+                                                $images=explode('|',$image->image);
+
+                                           foreach ($images as $image) {
+
+                                           }
+                                        }
+                                        @endphp
+                                            <img class="img-thumbnail" src="{{ URL::to($image) }}" alt="Loading" width="50">
+
+                                        </td>
                                         <td><a href="#">{{ $product->title }}</a></td>
                                         <td>{{ $product->price }}</td>
                                         <td>{{ $product->qty }}</td>
