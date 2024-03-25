@@ -2,6 +2,7 @@
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Product_Image;
 
 function getCategories()
 {
@@ -15,3 +16,4 @@ function getBrands()
         ->where('status', '1')
         ->get();
 }
+

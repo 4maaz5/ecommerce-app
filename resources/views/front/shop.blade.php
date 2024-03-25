@@ -122,7 +122,7 @@
                                     <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
 
                                     <div class="product-action">
-                                        <a class="btn btn-dark" href="#">
+                                        <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{ $product->id }})">
                                             <i class="fa fa-shopping-cart"></i> Add To Cart
                                         </a>
                                     </div>
@@ -216,6 +216,25 @@ function apply_filters(){
     url+='&sort='+$("#sort").val();
 
     window.location.href=url;
+}
+
+function addToCart(id) {
+    $.ajax({
+        url: '{{ route("front.addToCart") }}',
+        type: 'POST',
+        data: {
+            id: id,
+            _token: '{{ csrf_token() }}' // Include CSRF token
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.status==true) {
+                window.location.href="{{ route('front.cart') }}";
+            }else{
+                alert(response.message);
+            }
+        }
+    });
 }
 
     </script>

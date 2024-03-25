@@ -117,11 +117,13 @@
                            }
                         }
                         @endphp
+                        <a href="{{ route('front.products',$relproduct->slug) }}" class="product-img">
                         <img class="card-img-top" src="{{ URL::to($image) }}" alt="Loading" style="height: 270px">
+                        </a>
                             <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
 
                             <div class="product-action">
-                                <a class="btn btn-dark" href="{{ route('front.products',$relproduct->slug) }}">
+                                <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{ $relproduct->id }})">
                                     <i class="fa fa-shopping-cart"></i> Add To Cart
                                 </a>
                             </div>
@@ -146,16 +148,24 @@
 @endsection
 @section('customJs')
 <script type="text/javascript">
-function addToCart(id){
+function addToCart(id) {
     $.ajax({
-url:'{{ route("front.addToCart") }}',
-Type:'post',
-data:{id:id},
-dataType:'json',
-success:function(response){
-
-}
+        url: '{{ route("front.addToCart") }}',
+        type: 'POST',
+        data: {
+            id: id,
+            _token: '{{ csrf_token() }}' // Include CSRF token
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.status==true) {
+                window.location.href="{{ route('front.cart') }}";
+            }else{
+                alert(response.message);
+            }
+        }
     });
 }
+
     </script>
 @endsection

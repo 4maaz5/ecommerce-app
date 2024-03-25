@@ -49,7 +49,15 @@
 <body>
 @include('front.layouts.header')
 @yield('content')
-@include('front.layouts.footer')
-@yield('customJs')
+
+<script>
+       $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        </script>
+        @include('front.layouts.footer')
+        @yield('customJs')
 </body>
 </html>

@@ -56,6 +56,11 @@
 <script src="{{ asset('front/js/ion.rangeSlider.min.js') }}"></script>
 <script src="{{ asset('front/js/custom.js') }}"></script>
 <script>
+    $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+            }
+        });
 window.onscroll = function() {myFunction()};
 
 var navbar = document.getElementById("navbar");
@@ -68,9 +73,5 @@ function myFunction() {
     navbar.classList.remove("sticky");
   }
 }
-$.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-            }
-        });
+
 </script>
