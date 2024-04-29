@@ -97,14 +97,14 @@
                                         <div class="col-4 col-md-3 col-xl-2">
                                             <!-- Image -->
                                             @php
-                                            $image=DB::table('product__images')->where('product_id',$orderItem->id)->first();
+                                            $image=DB::table('product__images')->where('product_id',$orderItem->product_id)->first();
                                             if (!empty($image)) {
                                                 $images=explode('|',$image->image);
                                            foreach ($images as $image) {
                                            }
                                         }
                                         @endphp
-                                            <a href="product.html"><img src="{{ URL::to($image) }}" alt="..." class="img-fluid"></a>
+                                            <a href=""><img src="{{ URL::to($image) }}" alt="..." class="img-fluid"></a>
                                         </div>
                                         <div class="col">
                                             <!-- Title -->

@@ -7,7 +7,10 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Rating;
 use App\Models\SubCategory;
+use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Validator;
 
 class ShopController extends Controller
 {
@@ -27,7 +30,7 @@ class ShopController extends Controller
             ->get();
         $products = Product::orderBy('id', 'DESC')
         ->where('status', '1');
-
+// dd($categorySlug);
 
         // Apply filters here
         if (!empty($categorySlug)) {
@@ -56,7 +59,12 @@ class ShopController extends Controller
             }
         }
 
-        //  dd($request->get('sort') );
+        if (!empty($request->get('search'))) {
+            $products = $products->where('title','like','%'. $request->get('search').'%');
+
+        }
+
+        // //  dd($request->get('sort') );
         if ($request->get('sort')!='') {
 
             if ($request->get('sort') == 'latest') {
@@ -87,5 +95,43 @@ class ShopController extends Controller
         $data['priceMin'] = (intval($request->get('price_min')));
         $data['sort'] = $request->get('sort');
         return view('front.shop', $data);
+    }
+    public function saveRating(Request $request,$product_id){
+        $validator=Validator::make($request->all(),[
+          'name'=>'required|min:5',
+          'email'=>'required|email',
+          'comment'=>'required|min:10',
+          'rating'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+            'status'=>false,
+            'error'=>$validator->errors()
+            ]);
+        }
+        $check=Rating::where('email',$request->email)->first();
+        if ($check!=null) {
+            session()->flash('error','You already rated this product.');
+            return response()->json([
+              'status'=>true,
+              'message'=>'You already rated this product.'
+            ]);
+        }else{
+            $rating=new Rating();
+            $rating->product_id=$product_id;
+            $rating->user_name=$request->name;
+            $rating->email=$request->email;
+            $rating->comment=$request->comment;
+            $rating->rating=$request->rating;
+            $rating->status=0;
+            $rating->save();
+            session()->flash('success','Thanks for your rating.');
+            return response()->json([
+              'status'=>true,
+              'message'=>'Thanks for your rating.'
+            ]);
+
+        }
+
     }
 }

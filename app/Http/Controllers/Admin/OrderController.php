@@ -35,10 +35,11 @@ class OrderController extends Controller
        $order->status=$request->status;
        $order->shipped_date=$request->shipped_date;
        $order->save();
-       session()->flash('success','Order status updated successfully.');
-       return response()->json([
-           'status'=>true,
-           'message'=>'Order status updated successfully.'
-       ]);
+       return redirect()->back()->with('success','Order Status updated successfully.');
     }
+    public function sendInvoiceEmail(Request $request, $orderId){
+        orderEmail($orderId,$request->userType);
+        return redirect()->back()->with('success','Order email sent Successfully.');
+    }
+
 }

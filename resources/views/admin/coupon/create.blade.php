@@ -74,7 +74,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="discount_amount">Discount Amount</label>
-                                    <input type="text" name="discount_amount" id="discount_amount" class="form-control"
+                                    <input type="number" name="discount_amount" id="discount_amount" class="form-control"
                                         placeholder="Discount Amount">
                                     <p></p>
                                 </div>

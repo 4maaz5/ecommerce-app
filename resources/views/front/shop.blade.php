@@ -95,7 +95,8 @@
                                         <option value="latest" {{ ($sort=='latest')?'selected':'' }}>Latest</option>
                                         <option value="price_desc" {{ ($sort=='price_desc')?'selected':'' }}>Price High</option>
                                         <option value="price_asc" {{ ($sort=='price_asc')?'selected':'' }}>Price Low</option>
-                                </div>
+                                    </select>
+                                    </div>
                             </div>
                         </div>
                         @if(!empty($products))
@@ -103,7 +104,7 @@
                         <div class="col-md-4">
                             <div class="card product-card">
                                 <div class="product-image position-relative">
-                                    <a href="" class="product-img">
+                                    <a href="{{ route('front.products', $product->slug) }}" class="product-img">
                                         @php
                                             $image=DB::table('product__images')->where('product_id',$product->id)->first();
                                             if (!empty($image)) {
@@ -119,12 +120,26 @@
 
 
                                     </a>
-                                    <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
+                                    <a onclick="addToWishList({{ $product->id }})" class="whishlist" href="javascript:void(0);"><i class="far fa-heart"></i></a>
 
                                     <div class="product-action">
-                                        <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{ $product->id }})">
-                                            <i class="fa fa-shopping-cart"></i> Add To Cart
-                                        </a>
+                                        @if ($product->track_qty == 'Yes')
+                                                @if ($product->qty > 0)
+                                                    <a class="btn btn-dark" href="javaScript:void(0)"
+                                                        onclick="addToCart({{ $product->id }})">
+                                                        <i class="fa fa-shopping-cart"></i> Add To Cart
+                                                    </a>
+                                                @else
+                                                    <a class="btn btn-dark" href="javascript:void(0)">
+                                                        <i class="fa fa-shopping-cart"></i> Out of Stock
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <a class="btn btn-dark" href="javaScript:void(0)"
+                                                    onclick="addToCart({{ $product->id }})">
+                                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                                </a>
+                                            @endif
                                     </div>
                                 </div>
                                 <div class="card-body text-center mt-3">
@@ -150,15 +165,7 @@
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-end">
                                     {{ $products->links() }}
-                                    {{-- <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                    </li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
-                                    </li> --}}
+
                                 </ul>
                             </nav>
                         </div>
@@ -170,7 +177,7 @@
 </main>
 @endsection
 @section('customJs')
-<script>
+<script type="text/javaScript">
 rangeSlider=$(".js-range-slider").ionRangeSlider({
     type:"double",
     min:0,
@@ -213,6 +220,12 @@ function apply_filters(){
     //price range filter
     url +='&price_min='+slider.result.from+'&price_max='+slider.result.to;
     //sorting filter
+
+    var keyword=$("#search").val();
+    if (keyword.length>0) {
+        url+='&search='=keyword;
+    }
+
     url+='&sort='+$("#sort").val();
 
     window.location.href=url;
@@ -236,6 +249,23 @@ function addToCart(id) {
         }
     });
 }
+function addToWishList(id) {
+            $.ajax({
+                url: '{{ route('front.wishList') }}',
+                type: 'post',
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status == true) {
+                        $("#modalGrid .modal-body").html(response.message);
+                        $("#modalGrid").modal('show');
+                    } else {
+                        window.location.href = "{{ route('front.login') }}"
+                    }
+                }
+            });
 
     </script>
 @endsection

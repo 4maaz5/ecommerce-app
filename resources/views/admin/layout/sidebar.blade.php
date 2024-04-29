@@ -44,6 +44,12 @@
                         <p>Products</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('products.ratings') }}" class="nav-link">
+                        <i class="nav-icon  fa fa-star"></i>
+                        <p>Ratings</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('shipping.create') }}" class="nav-link">
@@ -65,17 +71,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="users.html" class="nav-link">
+                    <a href="{{ route('users.index') }}" class="nav-link">
                         <i class="nav-icon  fas fa-users"></i>
                         <p>Users</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="pages.html" class="nav-link">
+                    <a href="{{ route('pages.index') }}" class="nav-link">
                         <i class="nav-icon  far fa-file-alt"></i>
                         <p>Pages</p>
                     </a>
                 </li>
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

@@ -19,7 +19,10 @@ use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\front\UserProductController;
 use App\Http\Controllers\admin\DiscountCouponController;
 use App\Http\Controllers\admin\OrderController;
+use App\Http\Controllers\admin\PagesController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
+use App\Http\Controllers\admin\SettingController;
+use App\Http\Controllers\admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +34,10 @@ use App\Http\Controllers\admin\ProductSubCategoryController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Route::get('test',function(){
+//    orderEmail(9);
+// });
 
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
 Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class, 'index'])->name('front.shop');
@@ -45,6 +52,15 @@ Route::get('/thanks/{orderId}', [CartController::class, 'thankyou'])->name('fron
 Route::post('/get-order-summary', [CartController::class, 'getOrderSummary'])->name('front.summary');
 Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('front.discount');
 Route::post('/remove-discount', [CartController::class, 'removeCoupon'])->name('front.removeCoupon');
+Route::post('/add-to-wishlist', [FrontController::class, 'addToWishList'])->name('front.wishList');
+Route::get('/page/{slug}', [FrontController::class, 'page'])->name('front.page');
+Route::post('/send-contact-email', [FrontController::class, 'sendContactEmail'])->name('front.sendContactEmail');
+Route::get('/forgot-password/', [LoginController::class, 'forgotPassword'])->name('front.forgotPassword');
+Route::post('/process-forgot-password/', [LoginController::class, 'processForgotPassword'])->name('front.processForgotPassword');
+Route::get('/reset-password/', [LoginController::class, 'resetPassword'])->name('front.resetPassword');
+Route::post('/process-reset-password/', [LoginController::class, 'processResetPassword'])->name('front.processResetPassword');
+Route::post('/save-rating/{product_id}', [ShopController::class, 'saveRating'])->name('front.saveRating');
+
 
 Route::group(['prefix' => 'account'], function () {
     Route::group(['middleware' => 'guest'], function () {
@@ -56,9 +72,16 @@ Route::group(['prefix' => 'account'], function () {
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/profile', [LoginController::class, 'profile'])->name('account.profile');
+        Route::post('/update-profile', [LoginController::class, 'updateProfile'])->name('account.updateProfile');
+        Route::post('/update-address', [LoginController::class, 'updateAddress'])->name('account.updateAddress');
         Route::get('/my-orders', [LoginController::class, 'orders'])->name('account.orders');
+        Route::get('/my-wishList', [LoginController::class, 'wishList'])->name('account.wishList');
+        Route::post('/remove-product-wishList', [LoginController::class, 'removeProduct'])->name('account.removeProduct');
         Route::get('/order-detail/{orderId}', [LoginController::class, 'orderDetail'])->name('account.orderDetail');
         Route::get('/logout', [LoginController::class, 'logout'])->name('account.logout');
+        Route::get('/change-password-page', [LoginController::class, 'changePasswordPage'])->name('account.changePassword');
+        Route::post('/change-password', [LoginController::class, 'changePassword'])->name('account.changePasswordProcess');
+
 
     });
 });
@@ -112,6 +135,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/products/delete/{id}', [ProductController::class, 'destroy'])->name('products.delete');
         Route::get('/get-products', [ProductController::class, 'getProducts'])->name('products.related');
         Route::get('product/sub-categories', [ProductSubCategoryController::class, 'index'])->name('product-subcategories.index');
+        Route::get('product/ratings', [ProductController::class, 'productRatings'])->name('products.ratings');
+        Route::get('change/ratings', [ProductController::class, 'changeRatingStatus'])->name('products.changeRatingStatus');
 
 
         //Shipping routes
@@ -133,7 +158,30 @@ Route::group(['prefix' => 'admin'], function () {
          //Orders Routes
          Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
          Route::get('/orders/{id}', [OrderController::class, 'detail'])->name('orders.detail');
-         Route::post('order/change-status{orderId}', [OrderController::class, 'changeOrderStatus'])->name('order.changeStatus');
+         Route::post('orders/change-status{orderId}', [OrderController::class, 'changeOrderStatus'])->name('order.changeStatus');
+         Route::post('orders/invoice-email{id}', [OrderController::class, 'sendInvoiceEmail'])->name('order.sendInvoiceEmail');
+
+            //user routes
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::get('/users-create', [UserController::class, 'create'])->name('users.create');
+            Route::post('/users-store', [UserController::class, 'store'])->name('users.store');
+            Route::get('/users-edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('/users-update/{id}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('/users-delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
+
+
+                //pages routes
+                Route::get('/pages', [PagesController::class, 'index'])->name('pages.index');
+                Route::get('/pages-create', [PagesController::class, 'create'])->name('pages.create');
+                Route::post('/pages-store', [PagesController::class, 'store'])->name('pages.store');
+                Route::get('/pages-edit/{id}', [PagesController::class, 'edit'])->name('pages.edit');
+                Route::put('/pages-update/{id}', [PagesController::class, 'update'])->name('pages.update');
+                Route::delete('/pages-delete/{id}', [PagesController::class, 'destroy'])->name('pages.delete');
+
+                //settings route
+                Route::get('/change-password', [SettingController::class, 'showChangePasswordForm'])->name('admin.changePasswordForm');
+                Route::post('/admin-change-password', [SettingController::class, 'processChangePassword'])->name('admin.changePassword');
+
 
 
         Route::get('getSlug', function (Request $request) {
@@ -147,4 +195,16 @@ Route::group(['prefix' => 'admin'], function () {
             ]);
         })->name('getSlug');
     });
+    Route::get('get-pages-Slug', function (Request $request) {
+        $slug = '';
+        if (!empty($request->name)) {
+            $pageSlug = Str::slug($request->name);
+        }
+        return response()->json([
+            'status' => true,
+            'slug' => $pageSlug
+        ]);
+    })->name('getPagesSlug');
 });
+
+

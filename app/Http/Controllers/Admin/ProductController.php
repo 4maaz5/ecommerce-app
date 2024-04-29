@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\Brand;
-use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Rating;
 use App\Models\Product;
-use App\Models\Product_Image;
+use App\Models\Category;
 use App\Models\SubCategory;
+use Illuminate\Http\Request;
+use App\Models\Product_Image;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -88,7 +89,7 @@ class ProductController extends Controller
   public function edit($id){
     $product=Product::find($id);
     $categories=Category::where('id',$product->category_id)->get();
-    $subCategories=SubCategory::where('category_id',$product->category_id)->get();
+    $subCategories=SubCategory::all();
     $brands=Brand::all();
     //related products
     $relatedProducts=[];
@@ -193,5 +194,26 @@ class ProductController extends Controller
         'tags'=>$tempProduct,
         'status'=>true
      ]);
-  }
+    }
+    public function productRatings(Request $request){
+        $ratings=Rating::select('ratings.*','products.title as productTitle')->orderBy('ratings.created_at','DESC');
+        $ratings=$ratings->leftJoin('products','products.id','ratings.product_id');
+        if(!empty($request->get('keyword'))){
+            $ratings=$ratings->orWhere('products.title','like','%'.$request->get('keyword').'%');
+            $ratings=$ratings->orWhere('ratings.user_name','like','%'.$request->get('keyword').'%');
+          }
+        $ratings=$ratings->paginate(10);
+        $data['ratings']=$ratings;
+        return view('admin.products.ratings',$data);
+    }
+    public function changeRatingStatus(Request $request){
+       $productRating=Rating::find($request->id);
+       $productRating->status=$request->status;
+       $productRating->save();
+       session()->flash('success','Status Changed Successfully!');
+       return response()->json([
+        'status'=>true,
+
+       ]);
+    }
 }
