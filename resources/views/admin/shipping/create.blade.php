@@ -7,9 +7,7 @@
                 <div class="col-sm-6">
                     <h1>Shipping Management</h1>
                 </div>
-                <div class="col-sm-6 text-right">
-                    <a href="{{ route('categories.view') }}" class="btn btn-primary">Back</a>
-                </div>
+
             </div>
         </div>
         <!-- /.container-fluid -->
