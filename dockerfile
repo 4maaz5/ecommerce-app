@@ -1,9 +1,9 @@
 # Use official PHP image with necessary extensions
 FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions (added pdo_pgsql)
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev \
+    git curl zip unzip libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
