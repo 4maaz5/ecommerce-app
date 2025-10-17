@@ -29,7 +29,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files":[
-            "App/Helpers/helper.php"
+            "app/Helpers/helper.php"
         ]
     },
 
