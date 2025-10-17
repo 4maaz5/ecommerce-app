@@ -31,11 +31,7 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-<<<<<<< HEAD
         "files": [
-=======
-        "files":[
->>>>>>> 0a3c4459e7fb0eed2ba877c8a91576b5fee3a65f
             "app/Helpers/helper.php"
         ]
     },
