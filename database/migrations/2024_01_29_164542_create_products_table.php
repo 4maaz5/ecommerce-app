@@ -6,34 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->string('description')->nullable();
-            $table->double('price',10,2);
-            $table->double('compare_price',10,2)->nullable();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->double('price', 10, 2);
+            $table->double('compare_price', 10, 2)->nullable();
+            // $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete(); // new room link
             $table->foreignId('sub_category_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('brand_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->enum('is_featured',['Yes','No'])->default('No');
-            $table->string('sku');
+            $table->enum('is_featured', ['Yes', 'No'])->default('No');
+            $table->string('sku')->unique();
             $table->string('barcode')->nullable();
-            $table->enum('track_qty',['Yes','No'])->default('Yes');
-            $table->integer('qty')->nullable();
+            $table->enum('track_qty', ['Yes', 'No'])->default('Yes'); // whether inventory tracked
+            $table->integer('qty')->nullable(); // optional summary of stock
             $table->integer('status')->default(1);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');

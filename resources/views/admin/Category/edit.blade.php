@@ -5,7 +5,7 @@
         <div class="container-fluid my-2">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Edit Category</h1>
+                    <h1>Edit Room</h1>
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="{{ route('categories.view') }}" class="btn btn-primary">Back</a>
@@ -41,27 +41,28 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                           <div class="mb-3">
-                            <input type="hidden" id="image_id" name="image_id" value="">
-                            <label for="image">Image</label>
-                            <div id="image" class="dropzone dz-clickable">
-                                <div class="dz-message needsclick">
-                                    <br>Drop Files Here or click to upload.<br><br>
+                                <div class="mb-3">
+                                    <input type="hidden" id="image_id" name="image_id" value="">
+                                    <label for="image">Image</label>
+                                    <div id="image" class="dropzone dz-clickable">
+                                        <div class="dz-message needsclick">
+                                            <br>Drop Files Here or click to upload.<br><br>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                           </div>
-                           @if(!empty($category->image))
-                            <div>
-                                <img width="200px" src="{{ asset('uploads/category/'.$category->image) }}">
-                            </div>
-                           @endif
+                                @if (!empty($category->image))
+                                    <div>
+                                        <img width="200px" src="{{ asset('uploads/category/' . $category->image) }}">
+                                    </div>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control">
-                                        <option {{ ($category->status==1)?'selected':'' }} value="1">Active</option>
-                                        <option {{ ($category->status==0)?'selected':'' }} value="0">Block</option>
+                                        <option {{ $category->status == 1 ? 'selected' : '' }} value="1">Active
+                                        </option>
+                                        <option {{ $category->status == 0 ? 'selected' : '' }} value="0">Block</option>
                                     </select>
                                 </div>
                             </div>
@@ -69,8 +70,8 @@
                                 <div class="mb-3">
                                     <label for="show">Show On Home</label>
                                     <select name="show" id="show" class="form-control">
-                                        <option {{ ($category->show==1)?'selected':'' }} value="1">Yes</option>
-                                        <option {{ ($category->status==0)?'selected':'' }} value="0">No</option>
+                                        <option {{ $category->show == 1 ? 'selected' : '' }} value="1">Yes</option>
+                                        <option {{ $category->status == 0 ? 'selected' : '' }} value="0">No</option>
                                     </select>
                                 </div>
                             </div>
@@ -94,7 +95,7 @@
             var element = $(this);
             $("button[type=submit]").prop('disabled', true);
             $.ajax({
-                url: '{{ route('categories.update',$category->id) }}',
+                url: '{{ route('categories.update', $category->id) }}',
                 type: 'put',
                 data: element.serializeArray(),
                 dataType: 'json',
@@ -108,8 +109,8 @@
                         $('#slug').removeClass('is-invalid').siblings('p').removeClass(
                             'invalid-feedback').html("");
                     } else {
-                        if(reponse['notFound']==true){
-                            window.location.href="{{ route('categories.view') }}";
+                        if (reponse['notFound'] == true) {
+                            window.location.href = "{{ route('categories.view') }}";
                         }
                         var errors = response['errors'];
 
@@ -157,31 +158,30 @@
         });
 
         // Disable autoDiscover before including dropzone.js script
-Dropzone.autoDiscover = false;
+        Dropzone.autoDiscover = false;
 
-// Wrap your code in document ready function to ensure the DOM is fully loaded
-$(document).ready(function() {
-    const dropzone = new Dropzone('#image', {
-        init: function () {
-            this.on('addedfile', function (file) {
-                if (this.files.length > 1) {
-                    this.removeFile(this.files[0]);
+        // Wrap your code in document ready function to ensure the DOM is fully loaded
+        $(document).ready(function() {
+            const dropzone = new Dropzone('#image', {
+                init: function() {
+                    this.on('addedfile', function(file) {
+                        if (this.files.length > 1) {
+                            this.removeFile(this.files[0]);
+                        }
+                    });
+                },
+                url: "{{ route('temp-images.create') }}",
+                maxFiles: 1,
+                paramName: 'image',
+                addRemoveLinks: true,
+                acceptedFiles: 'image/jpeg,image/png,image/gif',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(file, response) {
+                    $('#image_id').val(response.image_id);
                 }
             });
-        },
-        url: "{{ route('temp-images.create') }}",
-        maxFiles: 1,
-        paramName: 'image',
-        addRemoveLinks: true,
-        acceptedFiles: 'image/jpeg,image/png,image/gif',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function (file, response) {
-            $('#image_id').val(response.image_id);
-        }
-    });
-});
-
+        });
     </script>
 @endsection

@@ -1,28 +1,29 @@
 <?php
 
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\HomeController;
-use App\Http\Controllers\front\CartController;
-use App\Http\Controllers\front\ShopController;
-use App\Http\Controllers\admin\BrandController;
-use App\Http\Controllers\front\FrontController;
-use App\Http\Controllers\front\LoginController;
-use App\Http\Controllers\admin\ProductController;
-use App\Http\Controllers\admin\CategoryController;
-use App\Http\Controllers\admin\ShippingController;
-use App\Http\Controllers\front\RegisterController;
 use App\Http\Controllers\Admin\AdminLoginController;
-use App\Http\Controllers\admin\TempImagesController;
-use App\Http\Controllers\admin\SubCategoryController;
-use App\Http\Controllers\front\UserProductController;
+use App\Http\Controllers\admin\BrandController;
+use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\DiscountCouponController;
+use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\PagesController;
+use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
 use App\Http\Controllers\admin\SettingController;
+use App\Http\Controllers\admin\ShippingController;
+use App\Http\Controllers\admin\SubCategoryController;
+use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\admin\WarehouseController;
+use App\Http\Controllers\front\CartController;
+use App\Http\Controllers\front\FrontController;
+use App\Http\Controllers\front\LoginController;
+use App\Http\Controllers\front\RegisterController;
+use App\Http\Controllers\front\ShopController;
+use App\Http\Controllers\front\UserProductController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +72,6 @@ Route::post('/process-reset-password/', [LoginController::class, 'processResetPa
 // Product rating
 Route::post('/save-rating/{product_id}', [ShopController::class, 'saveRating'])->name('front.saveRating');
 
-
 // ==========================
 // Account Routes
 // Prefix: /account
@@ -101,7 +101,6 @@ Route::group(['prefix' => 'account'], function () {
     });
 });
 
-
 // ==========================
 // Admin Routes
 // Prefix: /admin
@@ -120,6 +119,16 @@ Route::group(['prefix' => 'admin'], function () {
         // Dashboard & logout
         Route::get('dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
         Route::get('logout', [HomeController::class, 'logout'])->name('admin.logout');
+
+        // ----------------------
+        // Warehouse routes
+        // ----------------------
+        Route::get('warehouse/list', [WarehouseController::class, 'list'])->name('warehouse.list');
+        Route::post('warehouse/store', [WarehouseController::class, 'store'])->name('warehouse.store');
+        Route::get('warehouse', [WarehouseController::class, 'index'])->name('warehouse.create');
+        Route::get('warehouse/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('warehouse.edit');
+        Route::put('warehouse/{warehouse}/', [WarehouseController::class, 'update'])->name('warehouse.update');
+        Route::delete('warehouse/{warehouse}/', [WarehouseController::class, 'destroy'])->name('warehouse.delete');
 
         // ----------------------
         // Category routes
@@ -224,17 +233,19 @@ Route::group(['prefix' => 'admin'], function () {
         // ----------------------
         Route::get('getSlug', function (Request $request) {
             $slug = '';
-            if (!empty($request->title)) {
+            if (! empty($request->title)) {
                 $slug = Str::slug($request->title);
             }
+
             return response()->json(['status' => true, 'slug' => $slug]);
         })->name('getSlug');
 
         Route::get('get-pages-Slug', function (Request $request) {
             $slug = '';
-            if (!empty($request->name)) {
+            if (! empty($request->name)) {
                 $slug = Str::slug($request->name);
             }
+
             return response()->json(['status' => true, 'slug' => $slug]);
         })->name('getPagesSlug');
     });
