@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug');
-            $table->string('image')->default(Null);
+            $table->string('image')->default(null);
             $table->integer('status')->default(1);
+            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('slug');
             $table->string('status');
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

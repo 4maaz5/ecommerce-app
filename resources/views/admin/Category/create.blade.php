@@ -5,7 +5,7 @@
         <div class="container-fluid my-2">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Create Category</h1>
+                    <h1>Create Room</h1>
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="{{ route('categories.view') }}" class="btn btn-primary">Back</a>
@@ -24,6 +24,22 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-12">
+                                <label for="name">Warehouses</label>
+                                <select name="warehouse" id="category" class="form-control">
+                                    <option value="">Select a Warehouse</option>
+                                    @if ($warehouses->isNotEmpty())
+                                        @foreach ($warehouses as $warehouse)
+                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                <p></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="name">Name</label>
@@ -41,15 +57,15 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                           <div class="mb-3">
-                            <input type="hidden" id="image_id" name="image_id" value="">
-                            <label for="image">Image</label>
-                            <div id="image" class="dropzone dz-clickable">
-                                <div class="dz-message needsclick">
-                                    <br>Drop Files Here or click to upload.<br><br>
+                                <div class="mb-3">
+                                    <input type="hidden" id="image_id" name="image_id" value="">
+                                    <label for="image">Image</label>
+                                    <div id="image" class="dropzone dz-clickable">
+                                        <div class="dz-message needsclick">
+                                            <br>Drop Files Here or click to upload.<br><br>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                           </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -97,7 +113,7 @@
                     $("button[type=submit]").prop('disabled', false);
 
                     if (response["status"] === true) {
-                         window.location.href = "{{ route('categories.view') }}";
+                        window.location.href = "{{ route('categories.view') }}";
                         $('#name').removeClass('is-invalid').siblings('p').removeClass(
                             'invalid-feedback').html("");
                         $('#slug').removeClass('is-invalid').siblings('p').removeClass(
@@ -149,31 +165,30 @@
         });
 
         // Disable autoDiscover before including dropzone.js script
-Dropzone.autoDiscover = false;
+        Dropzone.autoDiscover = false;
 
-// Wrap your code in document ready function to ensure the DOM is fully loaded
-$(document).ready(function() {
-    const dropzone = new Dropzone('#image', {
-        init: function () {
-            this.on('addedfile', function (file) {
-                if (this.files.length > 1) {
-                    this.removeFile(this.files[0]);
+        // Wrap your code in document ready function to ensure the DOM is fully loaded
+        $(document).ready(function() {
+            const dropzone = new Dropzone('#image', {
+                init: function() {
+                    this.on('addedfile', function(file) {
+                        if (this.files.length > 1) {
+                            this.removeFile(this.files[0]);
+                        }
+                    });
+                },
+                url: "{{ route('temp-images.create') }}",
+                maxFiles: 1,
+                paramName: 'image',
+                addRemoveLinks: true,
+                acceptedFiles: 'image/jpeg,image/png,image/gif',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(file, response) {
+                    $('#image_id').val(response.image_id);
                 }
             });
-        },
-        url: "{{ route('temp-images.create') }}",
-        maxFiles: 1,
-        paramName: 'image',
-        addRemoveLinks: true,
-        acceptedFiles: 'image/jpeg,image/png,image/gif',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function (file, response) {
-            $('#image_id').val(response.image_id);
-        }
-    });
-});
-
+        });
     </script>
 @endsection
